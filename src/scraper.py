@@ -1,0 +1,121 @@
+from google_play_scraper import Sort, reviews
+
+import pandas as pd
+from datetime import datetime, timedelta
+from supabase import create_client, Client
+from .config import Config
+
+def save_reviews_to_supabase(df):
+    """Saves reviews to Supabase."""
+    if df.empty:
+        return
+
+    try:
+        supabase: Client = create_client(Config.SUPABASE_URL, Config.SUPABASE_KEY)
+        
+        # Convert DataFrame to list of dicts
+        # Ensure date is string format for JSON serialization if needed, but supabase client handles it usually.
+        # We might need to handle duplicates. Upsert is best if we have a unique ID.
+        # Since we don't have a unique ID from the source guaranteed to be unique across both, 
+        # we might rely on Supabase to generate IDs, but that risks duplicates.
+        # For now, let's just insert. A better approach would be to generate a hash of the content+date as ID.
+        
+        records = df.to_dict(orient='records')
+        
+        # Convert timestamps to string if needed
+        for record in records:
+            if isinstance(record['date'], pd.Timestamp):
+                record['date'] = record['date'].isoformat()
+
+        # Assuming table name is 'reviews'
+        data = supabase.table("reviews").upsert(records, on_conflict="text,date,source").execute()
+        print(f"Saved {len(records)} reviews to Supabase.")
+        
+    except Exception as e:
+        print(f"Error saving to Supabase: {e}")
+
+def fetch_google_play_reviews():
+    """Fetches reviews from Google Play Store."""
+    try:
+        result, _ = reviews(
+            Config.GOOGLE_PLAY_ID,
+            lang='en',
+            country='in',
+            sort=Sort.NEWEST,
+            count=200 # Fetch enough to cover the timeframe
+        )
+        
+        df = pd.DataFrame(result)
+        if df.empty:
+            return pd.DataFrame()
+
+        # Normalize columns
+        df = df[['content', 'score', 'at']]
+        df.columns = ['text', 'rating', 'date']
+        df['source'] = 'Google Play'
+        return df
+    except Exception as e:
+        print(f"Error fetching Google Play reviews: {e}")
+        return pd.DataFrame()
+
+import requests
+
+def fetch_app_store_reviews():
+    """Fetches reviews from Apple App Store via RSS feed."""
+    try:
+        # Apple RSS Feed URL
+        url = f"https://itunes.apple.com/{Config.APP_STORE_COUNTRY}/rss/customerreviews/id={Config.APP_STORE_ID}/sortBy=mostRecent/json"
+        response = requests.get(url)
+        response.raise_for_status()
+        
+        data = response.json()
+        entries = data.get('feed', {}).get('entry', [])
+        
+        reviews_list = []
+        for entry in entries:
+            # Skip the first entry if it's the app info (sometimes happens)
+            if 'im:rating' not in entry:
+                continue
+                
+            review = {
+                'text': entry.get('content', {}).get('label', ''),
+                'rating': int(entry.get('im:rating', {}).get('label', 0)),
+                'date': entry.get('updated', {}).get('label', ''),
+                'source': 'App Store'
+            }
+            reviews_list.append(review)
+            
+        df = pd.DataFrame(reviews_list)
+        if df.empty:
+            return pd.DataFrame()
+
+        # Normalize date
+        df['date'] = pd.to_datetime(df['date'])
+        return df
+    except Exception as e:
+        print(f"Error fetching App Store reviews: {e}")
+        return pd.DataFrame()
+
+def get_recent_reviews():
+    """Fetches and combines reviews from both sources for the configured timeframe."""
+    print("Fetching Google Play reviews...")
+    gp_reviews = fetch_google_play_reviews()
+    
+    print("Fetching App Store reviews...")
+    as_reviews = fetch_app_store_reviews()
+    
+    all_reviews = pd.concat([gp_reviews, as_reviews], ignore_index=True)
+    
+    if all_reviews.empty:
+        return pd.DataFrame()
+
+    # Filter by date
+    from datetime import timezone
+    cutoff_date = datetime.now(timezone.utc) - timedelta(weeks=Config.WEEKS_TO_ANALYZE)
+    all_reviews['date'] = pd.to_datetime(all_reviews['date'], utc=True)
+    recent_reviews = all_reviews[all_reviews['date'] >= cutoff_date]
+    
+    # Save to Supabase
+    save_reviews_to_supabase(recent_reviews)
+    
+    return recent_reviews

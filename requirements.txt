@@ -1,0 +1,7 @@
+google-play-scraper
+requests
+google-generativeai
+resend
+supabase
+pandas
+python-dotenv
