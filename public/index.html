@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Review Insights Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>App Insights</span>
+            </div>
+            <div id="auth-container">
+                <button id="sign-in-btn" class="btn secondary">Sign In</button>
+                <div id="user-profile" class="hidden">
+                    <span id="user-email"></span>
+                    <button id="sign-out-btn" class="btn text">Sign Out</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1>Unlock Insights from App Reviews</h1>
+                <p>Enter your Google Play or App Store URL to get a comprehensive AI-powered analysis of user feedback.
+                </p>
+
+                <div class="input-group">
+                    <input type="text" id="app-url" placeholder="https://play.google.com/store/apps/details?id=..."
+                        disabled>
+                    <button id="analyze-btn" class="btn primary" disabled>Analyze</button>
+                </div>
+                <p id="auth-message" class="hint">Please sign in to start analyzing.</p>
+            </section>
+
+            <section id="results-section" class="hidden">
+                <div class="loading-state hidden" id="loading-state">
+                    <div class="spinner"></div>
+                    <p>Analyzing reviews... This may take a minute.</p>
+                </div>
+
+                <div id="analysis-content" class="hidden">
+                    <div class="report-header">
+                        <h2>Analysis Report</h2>
+                        <span class="badge">Sent to Email</span>
+                    </div>
+                    <div id="report-body" class="markdown-body">
+                        <!-- Analysis content will be injected here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Sign In / Sign Up</h2>
+            <p>Enter your email to receive a magic link.</p>
+            <form id="auth-form">
+                <input type="email" id="email-input" placeholder="name@company.com" required>
+                <button type="submit" class="btn primary full-width">Send Magic Link</button>
+            </form>
+            <p id="auth-status"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -34,15 +34,15 @@ def save_reviews_to_supabase(df):
     except Exception as e:
         print(f"Error saving to Supabase: {e}")
 
-def fetch_google_play_reviews():
+def fetch_google_play_reviews(app_id, country='in', lang='en', count=200):
     """Fetches reviews from Google Play Store."""
     try:
         result, _ = reviews(
-            Config.GOOGLE_PLAY_ID,
-            lang='en',
-            country='in',
+            app_id,
+            lang=lang,
+            country=country,
             sort=Sort.NEWEST,
-            count=200 # Fetch enough to cover the timeframe
+            count=count
         )
         
         df = pd.DataFrame(result)
@@ -60,11 +60,11 @@ def fetch_google_play_reviews():
 
 import requests
 
-def fetch_app_store_reviews():
+def fetch_app_store_reviews(app_id, country='in'):
     """Fetches reviews from Apple App Store via RSS feed."""
     try:
         # Apple RSS Feed URL
-        url = f"https://itunes.apple.com/{Config.APP_STORE_COUNTRY}/rss/customerreviews/id={Config.APP_STORE_ID}/sortBy=mostRecent/json"
+        url = f"https://itunes.apple.com/{country}/rss/customerreviews/id={app_id}/sortBy=mostRecent/json"
         response = requests.get(url)
         response.raise_for_status()
         
@@ -96,13 +96,17 @@ def fetch_app_store_reviews():
         print(f"Error fetching App Store reviews: {e}")
         return pd.DataFrame()
 
-def get_recent_reviews():
+def get_recent_reviews(google_play_id=None, app_store_id=None, country='in', weeks=12):
     """Fetches and combines reviews from both sources for the configured timeframe."""
-    print("Fetching Google Play reviews...")
-    gp_reviews = fetch_google_play_reviews()
+    gp_reviews = pd.DataFrame()
+    if google_play_id:
+        print(f"Fetching Google Play reviews for {google_play_id}...")
+        gp_reviews = fetch_google_play_reviews(google_play_id, country=country)
     
-    print("Fetching App Store reviews...")
-    as_reviews = fetch_app_store_reviews()
+    as_reviews = pd.DataFrame()
+    if app_store_id:
+        print(f"Fetching App Store reviews for {app_store_id}...")
+        as_reviews = fetch_app_store_reviews(app_store_id, country=country)
     
     all_reviews = pd.concat([gp_reviews, as_reviews], ignore_index=True)
     
@@ -111,7 +115,7 @@ def get_recent_reviews():
 
     # Filter by date
     from datetime import timezone
-    cutoff_date = datetime.now(timezone.utc) - timedelta(weeks=Config.WEEKS_TO_ANALYZE)
+    cutoff_date = datetime.now(timezone.utc) - timedelta(weeks=weeks)
     all_reviews['date'] = pd.to_datetime(all_reviews['date'], utc=True)
     recent_reviews = all_reviews[all_reviews['date'] >= cutoff_date]
     

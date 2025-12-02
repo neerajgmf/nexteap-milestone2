@@ -66,14 +66,20 @@ def generate_html_email(analysis_data):
     """
     return html_content
 
-def send_email(analysis_data):
-    """Sends the weekly report email."""
+def send_email(analysis_json, to_email=None):
+    """Sends the analysis report via email using Resend."""
+    if not Config.RESEND_API_KEY:
+        print("RESEND_API_KEY not set. Skipping email.")
+        return None
+
+    recipient = to_email if to_email else Config.RECIPIENT_EMAIL
+    
     try:
-        html_content = generate_html_email(analysis_data)
+        html_content = generate_html_email(analysis_json)
         
         params = {
             "from": Config.SENDER_EMAIL,
-            "to": [Config.RECIPIENT_EMAIL],
+            "to": recipient,
             "subject": f"Weekly Insights: {Config.PRODUCT_NAME} - {datetime.now().strftime('%b %d')}",
             "html": html_content,
         }

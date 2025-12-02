@@ -3,18 +3,26 @@
     {
       "src": "api/cron.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "api/analyze.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/cron",
       "dest": "api/cron.py"
+    },
+    {
+      "src": "/api/analyze",
+      "dest": "api/analyze.py"
     }
   ],
   "crons": [
     {
       "path": "/api/cron",
-      "schedule": "0 9 * * 1"
+      "schedule": "0 0 * * *"
     }
   ]
 }

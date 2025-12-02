@@ -10,7 +10,13 @@ class handler(BaseHTTPRequestHandler):
             print("Starting cron job...")
             
             # 1. Fetch Reviews
-            reviews = get_recent_reviews()
+            from src.config import Config
+            reviews = get_recent_reviews(
+                google_play_id=Config.GOOGLE_PLAY_ID,
+                app_store_id=Config.APP_STORE_ID,
+                country=Config.APP_STORE_COUNTRY,
+                weeks=Config.WEEKS_TO_ANALYZE
+            )
             print(f"Fetched {len(reviews)} reviews.")
             
             if reviews.empty:
