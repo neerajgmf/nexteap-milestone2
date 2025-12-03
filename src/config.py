@@ -10,7 +10,8 @@ class Config:
     RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL") # User's email
     
     SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") # Use service role for writing if available, else anon
+    # Use service role key for writes (bypasses RLS), fallback to anon key
+    SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
     # Product Details
     PRODUCT_NAME = "IND MONEY"

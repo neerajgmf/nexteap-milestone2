@@ -1,86 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Review Insights Analyzer</title>
+    <title>INDmoney Review Pulse - Config</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <div class="container">
         <header>
             <div class="logo">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span>App Insights</span>
+                <span>Review Pulse</span>
             </div>
-            <div id="auth-container">
-                <button id="sign-in-btn" class="btn secondary">Sign In</button>
-                <div id="user-profile" class="hidden">
-                    <span id="user-email"></span>
-                    <button id="sign-out-btn" class="btn text">Sign Out</button>
-                </div>
-            </div>
+            <span class="badge">Cron-Driven</span>
         </header>
 
         <main>
             <section class="hero">
-                <h1>Unlock Insights from App Reviews</h1>
-                <p>Enter your Google Play or App Store URL to get a comprehensive AI-powered analysis of user feedback.
-                </p>
-
-                <div class="input-group">
-                    <input type="text" id="app-url" placeholder="https://play.google.com/store/apps/details?id=..."
-                        disabled>
-                    <button id="analyze-btn" class="btn primary" disabled>Analyze</button>
-                </div>
-                <p id="auth-message" class="hint">Please sign in to start analyzing.</p>
+                <h1>Weekly Review Pulse</h1>
+                <p>AI-powered insights from INDmoney app reviews, delivered to your inbox every week.</p>
             </section>
 
-            <section id="results-section" class="hidden">
-                <div class="loading-state hidden" id="loading-state">
-                    <div class="spinner"></div>
-                    <p>Analyzing reviews... This may take a minute.</p>
+            <section class="status-card">
+                <h2>System Status</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-label">Pipeline</span>
+                        <span class="status-value active">● Active</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Schedule</span>
+                        <span class="status-value">Every Monday 9:00 AM IST</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Data Window</span>
+                        <span class="status-value">Last 12 weeks</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Sources</span>
+                        <span class="status-value">Google Play + App Store</span>
+                    </div>
                 </div>
+            </section>
 
-                <div id="analysis-content" class="hidden">
-                    <div class="report-header">
-                        <h2>Analysis Report</h2>
-                        <span class="badge">Sent to Email</span>
-                    </div>
-                    <div id="report-body" class="markdown-body">
-                        <!-- Analysis content will be injected here -->
-                    </div>
+            <section class="info-card">
+                <h2>How It Works</h2>
+                <ol class="steps">
+                    <li><strong>Ingest</strong> — Fetches latest reviews from both app stores</li>
+                    <li><strong>Analyze</strong> — AI clusters reviews into ≤5 themes</li>
+                    <li><strong>Generate</strong> — Creates a ≤250 word weekly pulse note</li>
+                    <li><strong>Deliver</strong> — Emails the pulse to configured recipients</li>
+                </ol>
+            </section>
+
+            <section class="info-card">
+                <h2>Quick Commands</h2>
+                <div class="code-block">
+                    <code># Run ingestion manually</code>
+                    <code>python test_ingestion.py</code>
+                    <code></code>
+                    <code># View quick stats in console</code>
+                    <code>python utils/quick_stats.py --no-fetch</code>
+                    <code></code>
+                    <code># Full pipeline (coming soon)</code>
+                    <code>python -m api.cron</code>
                 </div>
             </section>
         </main>
-    </div>
 
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Sign In / Sign Up</h2>
-            <p>Enter your email to receive a magic link.</p>
-            <form id="auth-form">
-                <input type="email" id="email-input" placeholder="name@company.com" required>
-                <button type="submit" class="btn primary full-width">Send Magic Link</button>
-            </form>
-            <p id="auth-status"></p>
-        </div>
+        <footer>
+            <p>INDmoney Review Pulse • Milestone 2</p>
+        </footer>
     </div>
-
-    <script src="script.js"></script>
 </body>
-
 </html>

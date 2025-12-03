@@ -1,7 +1,27 @@
+# Scraping
 google-play-scraper
 requests
-google-generativeai
-resend
-supabase
+
+# Data Processing
 pandas
+numpy
+
+# Visualization (notebooks + console)
+matplotlib
+seaborn
+plotly
+
+# Console UI
+rich
+
+# LLM / AI
+google-generativeai
+
+# Email
+resend
+
+# Database
+supabase
+
+# Utils
 python-dotenv
