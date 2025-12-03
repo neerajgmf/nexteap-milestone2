@@ -16,6 +16,7 @@ rich
 
 # LLM / AI
 google-generativeai
+openai>=1.0.0  # OpenRouter uses OpenAI-compatible API
 
 # Email
 resend
