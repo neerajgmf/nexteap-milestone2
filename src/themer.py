@@ -73,11 +73,26 @@ def _call_llm(prompt: str, expect_json: bool = True) -> str:
             "model": Config.OPENROUTER_MODEL,
             "messages": [{"role": "user", "content": prompt}],
         }
-        if expect_json:
-            kwargs["response_format"] = {"type": "json_object"}
+        # Note: response_format may not be supported by all models
+        # Claude models work better with explicit JSON instructions in prompt
         
         response = client.chat.completions.create(**kwargs)
-        return response.choices[0].message.content.strip()
+        text = response.choices[0].message.content
+        
+        if text is None:
+            raise ValueError("Empty response from LLM")
+        
+        text = text.strip()
+        
+        # Clean up JSON if wrapped in code blocks
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+        
+        return text.strip()
     
     elif provider == "gemini":
         # Direct Gemini API
