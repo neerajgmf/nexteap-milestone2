@@ -1,0 +1,41 @@
+Subject: 📊 IND MONEY Weekly Pulse (Dec 03) - 63 Issues Found: Customer Support Issues
+
+IND MONEY WEEKLY PULSE
+========================================
+
+Period: September 10 - December 03, 2025
+Total Reviews: 550
+Reviews with Issues: 63 (11.5%)
+
+----------------------------------------
+TOP ISSUES
+----------------------------------------
+
+1. Customer Support Issues
+   19 mentions (3.5%) | Avg Rating: 1.9/5
+
+2. App Compatibility
+   17 mentions (3.1%) | Avg Rating: 2.3/5
+
+3. Data/Chart Accuracy
+   12 mentions (2.2%) | Avg Rating: 2.7/5
+
+----------------------------------------
+RECOMMENDED ACTIONS
+----------------------------------------
+
+1. [HIGH] Implement Dedicated Customer Support SLA System
+   Establish a tiered support system with guaranteed response times (24h for general queries, 4h for urgent issues like delistings). Create dedicated support channels for different product categories (mutual funds, insurance, stocks) with specialized agents and automated escalation for unresolved tickets after 48 hours.
+   Addresses: Customer Support Issues
+
+2. [HIGH] Optimize App Performance and Response Times
+   Conduct comprehensive performance audit to identify bottlenecks causing slow response times. Implement lazy loading for non-critical UI elements, optimize API calls, and add progress indicators for all user actions. Deploy performance monitoring tools to proactively identify and fix slowdowns.
+   Addresses: App Compatibility
+
+3. [MEDIUM] Expand Portfolio Tracking and Fix Data Feeds
+   Add support for NPS Tier 2, EPF, and EPS tracking to the portfolio dashboard. Fix OBV index volume calculation issues and implement real-time data validation checks. Create user-configurable dashboard widgets so users can customize which investments are displayed prominently.
+   Addresses: Data/Chart Accuracy
+
+----------------------------------------
+Generated on 2025-12-03 15:03 UTC
+AI Review Analyzer
